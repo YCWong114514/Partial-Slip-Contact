@@ -1,0 +1,6 @@
+The code is implemented in MATLAB.
+
+Its accuracy is constrained by the intrinsic length of the nanostructure, denoted as $\ell_a$.
+
+Moreover, the spectral method based on Chebyshev polynomials is limited by the number of computational nodes, typically denoted by $s$ or $x$.
+
