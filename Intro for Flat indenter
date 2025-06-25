@@ -1,8 +1,8 @@
-The code is implemented in MATLAB.
-Its accuracy is constrained by the intrinsic length of the nanostructure, denoted as $\ell$.
-Moreover, the spectral method based on Chebyshev polynomials is limited by the number of computational nodes, typically denoted by $s$ or $x$.
+The code is implemented in MATLAB.  
+Its accuracy is constrained by the intrinsic length of the nanostructure, denoted as l.  
+Moreover, the spectral method based on Chebyshev polynomials is limited by the number of computational nodes, typically denoted by 's' or 'x'.  
 Surface effects are also considered using the Chen–Yao method, which differs from the classical Gurtin–Murdoch theory.
 
-First, the pressure distribution $p(x)$ is computed using the Goodman approximation.
-Then, based on $p(x)$ and an initial guess for $c$, the correction term $\bar{q}(x)$ is calculated to obtain the shear traction $q(x)$.
-Finally, the process is generalized and iterated over $c$, $p(x)$, and $q(x)$ until a predefined convergence criterion is satisfied.
+First, the pressure distribution p(x) is computed using the Goodman approximation.  
+Then, based on p(x) and an initial guess for c, the correction term q̄(x) is calculated to obtain the shear traction q(x).  
+Finally, the process is generalized and iterated over c, p(x), and q(x) until a predefined convergence criterion is satisfied.
