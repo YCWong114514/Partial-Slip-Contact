@@ -1,0 +1,71 @@
+function [p_val,p_func,A, b] = sol_p1(P, v, la, N, a)
+%% Solve the p1(x) for r-step iteration
+%%  Input: 
+%         P    - total nromal Pressure
+%         v    - Possion's ratio
+%         la   - intrinsic length for surface effect
+%         N    - number of Chebyshev nodes
+%         a    - contact region width
+%% Output:
+%         p_val    - the first step of p(x) values
+%         p_func   - the first step of p(x) fucntion
+%         A        - the matrix of computation
+%         b        - the solution
+%% Initialize
+%%  Step 1: Normalized Chebyshev nodes on [-1, 1]
+    
+    % [1,-1]
+    %% Chen
+    x_bar =   sort(cos((2*(1:(N))' - 1) * pi / (2*N + 2)));
+    s_bar =   sort(cos(((1:N)') * pi / (N+1))); 
+
+    k1 = 2;
+    k2 = 2/(3 - 4*v);
+
+%% Compute
+%%  Step 2: Construct kernel matrix A, b 
+
+    lx = length(x_bar);
+    ls = length(s_bar);
+    A = zeros(lx, ls);
+    b = zeros(lx,1);
+    for i = 1:lx
+        xi = x_bar(i);
+        for j = 1:ls
+            sj = s_bar(j);
+            % Numerical integration over t ∈ [0, upper_limit]
+            K_vals1 =  K1(xi, sj, k1, la);
+            K_vals2 =  K1(xi, sj, k2, la);
+            I = K_vals1 + K_vals2;
+            
+            % Assign to matrices
+            A(i,j) = I * sqrt(1-sj^2)/ls;
+            
+        end
+      b(i) = 0;
+
+    end
+    A(end,:) = sqrt(1-s_bar.^2)./ls;
+
+    b(end)   = P/a/pi; 
+
+%% Step 3: Solve A * p1 = b
+ 
+    p_val = (A\b);
+
+%% Step 4: Ploy fit or Interp the p1(x) x from -1 to 1
+
+    p_func = @(x) interp1(a.*s_bar(2:end-1), p_val(2:end-1), x, 'pchip', 'extrap');      
+    
+%% Step 5: Normalize total force = P
+    p_val = p_func(a.*s_bar);
+
+    parea = integral(p_func, -a, a);
+    p_val = P/parea .* p_val; 
+    p_func = @(x) interp1(a.*s_bar, p_val, x, 'pchip', 'extrap'); 
+
+%% Debug
+
+    fprintf("Target P = %.6f, Real_value = %.6f, Sum_value = %.6f, error_real = %.2e,  error_sum = %.2e\n", P, parea*a, sum(p_val./N.*sqrt(1-s_bar.^2)), abs(parea*a - P)/P, abs(sum(p_val./N.*sqrt(1-s_bar.^2)) -P/a/pi)/P*a*pi);
+    
+end
